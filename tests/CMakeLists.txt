@@ -27,6 +27,7 @@ if (WIN32)
 endif()
 
 if (OE_SGX)
+    add_subdirectory(cpuid)
     add_subdirectory(debugger)
     add_subdirectory(host_verify)
     add_subdirectory(switchless)
