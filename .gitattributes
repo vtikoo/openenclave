@@ -24,6 +24,7 @@
 /3rdparty/dlmalloc/dlmalloc/**  -text -eol
 /3rdparty/libcxx/libcxx/**      -text -eol
 /3rdparty/libcxxrt/libcxxrt/**  -text -eol
+/3rdparty/libgcov/src/**        -text -eol
 /3rdparty/libunwind/libunwind** -text -eol
 /3rdparty/mbedtls/mbedtls/**    -text -eol
 /3rdparty/musl/musl/**          -text -eol

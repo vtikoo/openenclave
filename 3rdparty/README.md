@@ -12,6 +12,8 @@ the following directories:
 
 - [libcxxrt](libcxxrt) - C++ runtime support library (used in oelibcxx)
 
+- [libgcov](libgcov) - Gcov-based code coverage analysis library
+
 - [libunwind](libunwind) - C++ exception unwinding library (used in oelibcxx)
 
 - [mbedtls](mbedtls) - Crypto library
