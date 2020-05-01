@@ -15,6 +15,7 @@
 #else
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/file.h> // Open Enclave: Include flock().
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
