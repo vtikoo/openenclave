@@ -18,6 +18,13 @@ add_enclave_library(oecryptombed STATIC
 
 maybe_build_using_clangw(oecryptombed)
 
+if (CODE_COVERAGE)
+    # Enable code coverage.
+    enclave_compile_options(oecryptombed PRIVATE -g -O0 -fprofile-arcs -ftest-coverage)
+    # Link against libgcov.
+    enclave_link_libraries(oecryptombed PRIVATE gcov)
+endif()
+
 enclave_link_libraries(oecryptombed PUBLIC mbedcrypto)
 
 set_enclave_property(TARGET oecryptombed PROPERTY ARCHIVE_OUTPUT_DIRECTORY ${OE_LIBDIR}/openenclave/enclave)

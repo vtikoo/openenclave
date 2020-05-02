@@ -58,3 +58,8 @@ information for these is shown below.
 
         license: Apache 2.0 (see 3rdparty/mbedtls/mbedtls/LICENSE)
 
+    (*) libgcov (part of LLVM compiler-rt):
+
+        website: https://compiler-rt.llvm.org/
+
+        license: "BSD-Like" and MIT (see 3rdparty/libgcov/LICENSE.TXT)
