@@ -40,7 +40,8 @@ foreach(testcase ${alltests})
         # Run the enclave test and compare its output against the expected one.
         add_test(NAME tests/libcxxrt/${name}-diff
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-            COMMAND ${OE_BASH} -c "./host/libcxxrt_host ./enc/libcxxrttest-${name}_enc > ${name}_output.log 2>&1 &&
+            COMMAND ${CMAKE_COMMAND} -E env OE_LOG_LEVEL=NONE # Ensure the ouput not affected by logs.
+                    ${OE_BASH} -c "./host/libcxxrt_host ./enc/libcxxrttest-${name}_enc > ${name}_output.log 2>&1 &&
             diff ${name}_output.log ${RESULTDIR}/exp_${name}_output.log")
     endif()
 endforeach(testcase)

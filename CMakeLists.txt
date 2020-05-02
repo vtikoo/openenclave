@@ -211,6 +211,37 @@ option(COMPILE_SYSTEM_EDL "Build system ecalls and ocalls into OE libraries. If 
 
 option(BUILD_TESTS "Build OE tests" ON)
 
+option(CODE_COVERAGE "Enable code coverage test" OFF)
+if (CODE_COVERAGE)
+  message("-- CODE_COVERAGE set - enable code coverage tests")
+  add_custom_target(code_coverage
+    COMMAND mkdir -p coverage
+    COMMAND lcov -c -i -d ${CMAKE_BINARY_DIR} --gcov-tool ${OE_SCRIPTSDIR}/code-coverage/llvm-gcov -o coverage/base.info
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+
+  set(FILTERED_LIST
+      "'${PROJECT_SOURCE_DIR}/tests/*'"
+      "'${PROJECT_SOURCE_DIR}/3rdparty/*'"
+      "'${CMAKE_BINARY_DIR}/tests/*'"
+      "'${CMAKE_BINARY_DIR}/3rdparty/*'")
+
+  add_custom_command(TARGET code_coverage
+    COMMAND lcov -d ${CMAKE_BINARY_DIR} --gcov-tool ${OE_SCRIPTSDIR}/code-coverage/llvm-gcov -c -o cov.info --rc lcov_branch_coverage=1
+    COMMAND lcov -a base.info -a cov.info -o cov_total.info --rc lcov_branch_coverage=1
+    COMMAND lcov --remove cov_total.info ${FILTERED_LIST} -o cov_filtered.info --rc lcov_branch_coverage=1
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/coverage)
+
+  add_custom_command(TARGET code_coverage
+    COMMENT "Generate ${CMAKE_BINARY_DIR}/coverage/coverage.xml"
+    DEPENDS ${CMAKE_BINARY_DIR}/coverage/cov_filtered.info
+    COMMAND ${OE_SCRIPTSDIR}/code-coverage/lcov_cobertura ${CMAKE_BINARY_DIR}/coverage/cov_filtered.info -o ${CMAKE_BINARY_DIR}/coverage/coverage.xml
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+
+  add_custom_target(code_coverage_clean
+    COMMAND find ${CMAKE_BINARY_DIR} -type f -name '*.gcda' -delete
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+endif()
+
 find_program(VALGRIND "valgrind")
 if (VALGRIND)
   set(MEMORYCHECK_COMMAND_OPTIONS "--leak-check=full --error-exitcode=1")

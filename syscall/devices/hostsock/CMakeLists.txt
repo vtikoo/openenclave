@@ -9,7 +9,14 @@ enclave_include_directories(oehostsock PRIVATE
     ${CMAKE_BINARY_DIR}/syscall
     ${PROJECT_SOURCE_DIR}/include/openenclave/corelibc)
 
-enclave_link_libraries(oehostsock oesyscall)
+if (CODE_COVERAGE)
+    # Enable code coverage.
+    enclave_compile_options(oehostsock PRIVATE -g -O0 -fprofile-arcs -ftest-coverage)
+    # Link against libgcov.
+    enclave_link_libraries(oehostsock PRIVATE gcov)
+endif()
+
+enclave_link_libraries(oehostsock PRIVATE oesyscall)
 
 install_enclaves(TARGETS oehostsock EXPORT openenclave-targets ARCHIVE
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/openenclave/enclave)

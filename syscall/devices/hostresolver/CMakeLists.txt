@@ -9,7 +9,14 @@ enclave_include_directories(oehostresolver PRIVATE
     ${CMAKE_BINARY_DIR}/syscall
     ${PROJECT_SOURCE_DIR}/include/openenclave/corelibc)
 
-enclave_link_libraries(oehostresolver oesyscall)
+if (CODE_COVERAGE)
+    # Enable code coverage.
+    enclave_compile_options(oehostresolver PRIVATE -fprofile-arcs -ftest-coverage)
+    # Link against libgcov.
+    enclave_link_libraries(oehostresolver PRIVATE gcov)
+endif()
+
+enclave_link_libraries(oehostresolver PRIVATE oesyscall)
 
 install_enclaves(TARGETS oehostresolver EXPORT openenclave-targets ARCHIVE
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/openenclave/enclave)
