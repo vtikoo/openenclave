@@ -161,7 +161,7 @@ waiting_for_connection_request:
 
     // set up bio callbacks
     mbedtls_ssl_set_bio(
-        ssl, client_fd, mbedtls_net_send, NULL, mbedtls_net_recv_timeout);
+        ssl, client_fd, mbedtls_net_send, mbedtls_net_recv, NULL);
 
     printf(TLS_SERVER "Performing the SSL/TLS handshake...\n");
     while ((ret = mbedtls_ssl_handshake(ssl)) != 0)
@@ -172,7 +172,9 @@ waiting_for_connection_request:
             printf(
                 TLS_SERVER "failed\n  ! mbedtls_ssl_handshake returned -0x%x\n",
                 -ret);
-            goto done;
+            // ssl handshake fail due to load balancer health-check pings
+            // wait for actual tls client to send request
+            goto waiting_for_connection_request;
         }
     }
 
