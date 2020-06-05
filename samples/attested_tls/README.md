@@ -1,3 +1,16 @@
+## Kubernetes setup
+
+1. Build docker image and push
+```
+docker build -t <docker-hub-repo-name>/<image-name> .
+docker push <docker-hub-repo-name>/<image-name>
+```
+
+2. Deploy to k8s
+```
+kubectl apply -f server.yaml
+```
+
 ## Prerequisites
  The audience is assumed to be familiar:
  [What is an Attested TLS channel](AttestedTLSREADME.md#what-is-an-attested-tls-channel)
