@@ -96,6 +96,7 @@ int configure_server_ssl(
     mbedtls_ssl_conf_authmode(conf, MBEDTLS_SSL_VERIFY_OPTIONAL);
     mbedtls_ssl_conf_verify(conf, cert_verify_callback, NULL);
     mbedtls_ssl_conf_ca_chain(conf, server_cert->next, NULL);
+    mbedtls_ssl_conf_read_timeout(conf, 10000);
 
     if ((ret = mbedtls_ssl_conf_own_cert(conf, server_cert, pkey)) != 0)
     {
@@ -160,7 +161,7 @@ waiting_for_connection_request:
 
     // set up bio callbacks
     mbedtls_ssl_set_bio(
-        ssl, client_fd, mbedtls_net_send, mbedtls_net_recv, NULL);
+        ssl, client_fd, mbedtls_net_send, NULL, mbedtls_net_recv_timeout);
 
     printf(TLS_SERVER "Performing the SSL/TLS handshake...\n");
     while ((ret = mbedtls_ssl_handshake(ssl)) != 0)

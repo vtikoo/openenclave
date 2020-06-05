@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: attested-tls-service
+spec:
+  ports:
+  - name: client1
+    port: 12341
+    targetPort: 12341
+  selector:
+    app: tls-server-app
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tls-server-demo
+  labels:
+    app: tls-server-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tls-server-app
+  template:
+    metadata:
+      labels:
+        app: tls-server-app
+    spec:
+      containers:
+      - name: tls-server-demo
+        image: vtikoo/attested_tls:0.2
+        command: ["./server/host/tls_server_host", "./server/enc/tls_server_enc.signed", "-port:12341"]
+        ports:
+        - name: client1
+          containerPort: 12341
+        # - name: client2
+        #   containerPort: 12342
+        # - name: client3
+        #   containerPort: 12343
+        resources:
+          limits:
+            kubernetes.azure.com/sgx_epc_mem_in_MiB: 25
