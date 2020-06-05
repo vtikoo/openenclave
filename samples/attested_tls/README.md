@@ -1,12 +1,15 @@
 ## Kubernetes setup
-
-1. Build docker image and push
+1. Build the sample
+```
+make
+```
+2. Build docker image and push
 ```
 docker build -t <docker-hub-repo-name>/<image-name> .
 docker push <docker-hub-repo-name>/<image-name>
 ```
 
-2. Deploy to k8s
+3. Deploy to k8s
 ```
 kubectl apply -f server.yaml
 ```
