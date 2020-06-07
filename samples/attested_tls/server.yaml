@@ -29,15 +29,12 @@ spec:
     spec:
       containers:
       - name: tls-server-demo
-        image: vtikoo/attested_tls:0.2
+        image: vtikoo/attested_tls:1.0
         command: ["./server/host/tls_server_host", "./server/enc/tls_server_enc.signed", "-port:12341"]
         ports:
         - name: client1
           containerPort: 12341
-        # - name: client2
-        #   containerPort: 12342
-        # - name: client3
-        #   containerPort: 12343
+        imagePullPolicy: Always
         resources:
           limits:
             kubernetes.azure.com/sgx_epc_mem_in_MiB: 25
