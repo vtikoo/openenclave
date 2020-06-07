@@ -166,15 +166,19 @@ waiting_for_connection_request:
     printf(TLS_SERVER "Performing the SSL/TLS handshake...\n");
     while ((ret = mbedtls_ssl_handshake(ssl)) != 0)
     {
+        // load balancer health-check pings can cause EOF errors
+        // wait for actual tls client to send request
+        if (ret == MBEDTLS_ERR_SSL_CONN_EOF)
+        {
+            goto waiting_for_connection_request;
+        }
         if (ret != MBEDTLS_ERR_SSL_WANT_READ &&
             ret != MBEDTLS_ERR_SSL_WANT_WRITE)
         {
             printf(
                 TLS_SERVER "failed\n  ! mbedtls_ssl_handshake returned -0x%x\n",
                 -ret);
-            // ssl handshake fail due to load balancer health-check pings
-            // wait for actual tls client to send request
-            goto waiting_for_connection_request;
+            goto done;
         }
     }
 
@@ -273,7 +277,7 @@ waiting_for_connection_request:
 
     ret = 0;
     // comment out the following line if you want the server in a loop
-    // goto waiting_for_connection_request;
+    goto waiting_for_connection_request;
 
 done:
     return ret;
