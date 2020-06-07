@@ -13,6 +13,17 @@ docker push <docker-hub-repo-name>/<image-name>
 ```
 kubectl apply -f server.yaml
 ```
+4. Confirm Server is running and external IP has been assigned
+```
+kubectl get svc | grep attested-tls-service | awk '{print $4}'
+```
+
+5. Fetch IP and start client
+``` 
+IP_ADDRESS=$(kubectl get svc | grep attested-tls-service | awk '{print $4}')
+./run_non_enc_client.sh 
+```
+
 
 ## Prerequisites
  The audience is assumed to be familiar:
