@@ -131,7 +131,7 @@ int handle_communication_until_done(
 
 waiting_for_connection_request:
 
-    if (ret != 0)
+    if (ret != 0 && ret != MBEDTLS_ERR_SSL_CONN_EOF)
     {
         mbedtls_strerror(ret, error_buf, MAX_ERROR_BUFF_SIZE);
         printf("Last error was: %d - %s\n", ret, error_buf);
@@ -152,18 +152,18 @@ waiting_for_connection_request:
             errbuf);
         goto done;
     }
-    printf(
-        TLS_SERVER
-        "mbedtls_net_accept returned successfully.(listen_fd = %d) (client_fd "
-        "= %d) \n",
-        listen_fd->fd,
-        client_fd->fd);
+    // printf(
+    //     TLS_SERVER
+    //     "mbedtls_net_accept returned successfully.(listen_fd = %d) (client_fd "
+    //     "= %d) \n",
+    //     listen_fd->fd,
+    //     client_fd->fd);
 
     // set up bio callbacks
     mbedtls_ssl_set_bio(
         ssl, client_fd, mbedtls_net_send, mbedtls_net_recv, NULL);
 
-    printf(TLS_SERVER "Performing the SSL/TLS handshake...\n");
+    //printf(TLS_SERVER "Performing the SSL/TLS handshake...\n");
     while ((ret = mbedtls_ssl_handshake(ssl)) != 0)
     {
         // load balancer health-check pings can cause EOF errors
